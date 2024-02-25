@@ -136,4 +136,31 @@ export class UserResolver {
         return {user}
     }
 
+
+    //logout
+    @Mutation(() => Boolean, {nullable: true})
+    async logout(
+        @Ctx() {req}: MyContext): Promise<Boolean | null> {
+        if (!req.session.userId) {
+            return null
+        }
+        // attempt to destroy the session
+        try {
+            await new Promise((resolve, reject) => {
+                req.session.destroy((err)=> {
+                    if (err) {
+                        console.log(err)
+                        return reject(err);
+                    } else {
+                    resolve(true); //promise resolved succesfully
+                    }
+                });
+            });
+            return true; //session was destroyed succesfully
+        }catch (error) {
+            return false; //error with session destruction
+        }
+    }
+
+
 }

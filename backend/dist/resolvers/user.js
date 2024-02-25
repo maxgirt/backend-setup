@@ -135,6 +135,28 @@ let UserResolver = class UserResolver {
         req.session.userId = user.id;
         return { user };
     }
+    async logout({ req }) {
+        if (!req.session.userId) {
+            return null;
+        }
+        try {
+            await new Promise((resolve, reject) => {
+                req.session.destroy((err) => {
+                    if (err) {
+                        console.log(err);
+                        return reject(err);
+                    }
+                    else {
+                        resolve(true);
+                    }
+                });
+            });
+            return true;
+        }
+        catch (error) {
+            return false;
+        }
+    }
 };
 exports.UserResolver = UserResolver;
 __decorate([
@@ -160,6 +182,13 @@ __decorate([
     __metadata("design:paramtypes", [UsernamePasswordInput, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "login", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => Boolean, { nullable: true }),
+    __param(0, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "logout", null);
 exports.UserResolver = UserResolver = __decorate([
     (0, type_graphql_1.Resolver)()
 ], UserResolver);
